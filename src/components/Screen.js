@@ -1,18 +1,22 @@
 /**
  * Screen Component
- * Mobile device frame with UI elements
+ * Mobile device frame with wireframe elements
  */
 
 import { store } from '../services/store.js';
-import { renderElement } from './Element.js';
+import { renderWireframeElement } from './WireframeElement.js';
 
 export function renderScreen(screen) {
-    const isSelected = store.isScreenSelected(screen.id);
+  const isSelected = store.isScreenSelected(screen.id);
 
-    const x = screen.position?.x || 0;
-    const y = screen.position?.y || 0;
+  const x = screen.position?.x || 0;
+  const y = screen.position?.y || 0;
 
-    return `
+  // Filter out navbar from regular elements (render separately at bottom)
+  const regularElements = screen.elements.filter(el => el.type !== 'navbar');
+  const navbar = screen.elements.find(el => el.type === 'navbar');
+
+  return `
     <div 
       class="screen-wrapper ${isSelected ? 'selected' : ''}"
       data-screen-id="${screen.id}"
@@ -40,44 +44,15 @@ export function renderScreen(screen) {
             </span>
           </div>
           <div class="screen-content">
-            ${screen.elements.map(el => renderElement(el, screen.id)).join('')}
+            ${regularElements.map(el => renderWireframeElement(el, screen.id)).join('')}
           </div>
-          ${renderNavbar(screen)}
+          ${navbar ? renderWireframeElement(navbar, screen.id) : ''}
         </div>
       </div>
-      <div class="screen-label">${screen.name}</div>
-    </div>
-  `;
-}
-
-function renderNavbar(screen) {
-    const navbar = screen.elements.find(el => el.type === 'navbar');
-    if (!navbar) return '';
-
-    const items = navbar.content?.items || ['Home', 'Search', 'Cart', 'Profile'];
-    const icons = {
-        'Home': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-        'Search': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`,
-        'Cart': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
-        'Profile': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-        'Favorites': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-        'Settings': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
-        'Messages': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
-        'Notifications': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
-    };
-
-    const defaultIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>`;
-
-    return `
-    <div class="ui-element navbar" data-element-id="${navbar.id}">
-      ${items.map((item, idx) => `
-        <div class="nav-item ${idx === 0 ? 'active' : ''}">
-          ${icons[item] || defaultIcon}
-          <span>${item}</span>
-        </div>
-      `).join('')}
+      <div class="screen-label">${screen.name || 'Untitled'}</div>
     </div>
   `;
 }
 
 export default renderScreen;
+

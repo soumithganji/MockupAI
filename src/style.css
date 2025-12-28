@@ -464,6 +464,69 @@ body {
   position: relative;
 }
 
+/* Dynamic AI-generated elements */
+.ui-element.dynamic-element {
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+  width: 100%;
+}
+
+.ui-element.dynamic-element>* {
+  width: 100%;
+}
+
+.ui-element.dynamic-element * {
+  box-sizing: border-box;
+}
+
+/* Force full-width for common AI-generated patterns */
+.ui-element.dynamic-element div {
+  width: 100%;
+}
+
+.ui-element.dynamic-element button {
+  cursor: pointer;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  width: 100%;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: #fff;
+}
+
+.ui-element.dynamic-element input,
+.ui-element.dynamic-element textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.ui-element.dynamic-element img,
+.ui-element.dynamic-element svg {
+  max-width: 100%;
+}
+
+/* Cards and containers in dynamic elements */
+.ui-element.dynamic-element [class*="card"],
+.ui-element.dynamic-element [class*="item"],
+.ui-element.dynamic-element [class*="row"] {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
 .ui-element:hover {
   outline: 2px solid rgba(139, 92, 246, 0.3);
   outline-offset: 2px;
@@ -1396,6 +1459,95 @@ body {
 }
 
 /* Message Bubble */
+
+/* Cart Item */
+.ui-element.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.ui-element.cart-item .cart-item-image {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.ui-element.cart-item .cart-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-element.cart-item .cart-item-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-element.cart-item .cart-item-variant {
+  font-size: 11px;
+  color: #71717a;
+  margin-bottom: 4px;
+}
+
+.ui-element.cart-item .cart-item-price {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent-secondary);
+}
+
+.ui-element.cart-item .cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.ui-element.cart-item .qty-btn {
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui-element.cart-item .qty-value {
+  font-weight: 600;
+  font-size: 14px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.ui-element.cart-item .cart-item-remove {
+  width: 28px;
+  height: 28px;
+  background: rgba(239, 68, 68, 0.1);
+  border: none;
+  border-radius: 6px;
+  color: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
 .ui-element.message-bubble {
   max-width: 75%;
   padding: 10px 14px;
@@ -1419,6 +1571,51 @@ body {
   color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
   text-align: right;
+}
+
+/* Notification Item */
+/* Menu Item */
+.ui-element.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.ui-element.menu-item .menu-icon {
+  color: var(--accent-primary);
+}
+
+.ui-element.menu-item .menu-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.ui-element.menu-item .menu-arrow {
+  color: #71717a;
+}
+
+/* Price Row */
+.ui-element.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+
+.ui-element.price-row .price-label {
+  color: #a1a1aa;
+  font-weight: 500;
+}
+
+.ui-element.price-row .price-value {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent-secondary);
 }
 
 /* Notification Item */

@@ -4,6 +4,7 @@
  */
 
 import './style.css';
+import './wireframe.css';
 import { store } from './services/store.js';
 import { nimApi } from './services/nimApi.js';
 import { initCanvas } from './components/Canvas.js';
@@ -306,13 +307,34 @@ class App {
         const selectedItems = store.getSelectedItems();
 
         let response;
-        if (mockup && (selectedItems.length > 0 || message.toLowerCase().includes('change') || message.toLowerCase().includes('update'))) {
+        // Keywords that indicate the user wants to edit the mockup
+        const editKeywords = ['change', 'update', 'add', 'show', 'remove', 'delete', 'make', 'put', 'modify', 'replace', 'move', 'resize', 'edit', 'create', 'insert', 'hide', 'display'];
+        const wantsEdit = editKeywords.some(keyword => message.toLowerCase().includes(keyword));
+
+        if (mockup && (selectedItems.length > 0 || wantsEdit)) {
           // Edit existing mockup
+          console.log('Editing mockup with request:', message);
           response = await nimApi.editMockup(mockup, selectedItems, message);
+          console.log('Raw AI response:', response);
           const updatedMockup = nimApi.parseJsonResponse(response);
+          console.log('Parsed mockup:', updatedMockup);
+
+          // Preserve original screen positions if not specified in update
+          if (mockup.screens && updatedMockup.screens) {
+            updatedMockup.screens.forEach((screen, idx) => {
+              const originalScreen = mockup.screens.find(s => s.id === screen.id) || mockup.screens[idx];
+              if (originalScreen && !screen.position) {
+                screen.position = originalScreen.position;
+              }
+            });
+          }
+
           this.ensureMockupIds(updatedMockup);
           store.setMockup(updatedMockup);
-          store.addChatMessage('assistant', 'Done! I\'ve updated the mockup based on your request.');
+
+          const screenCount = updatedMockup.screens?.length || 0;
+          const elementCount = updatedMockup.screens?.reduce((sum, s) => sum + (s.elements?.length || 0), 0) || 0;
+          store.addChatMessage('assistant', `Done! Updated mockup with ${screenCount} screens and ${elementCount} elements.`);
         } else if (!mockup) {
           // Generate new mockup
           response = await nimApi.generateMockup(message);

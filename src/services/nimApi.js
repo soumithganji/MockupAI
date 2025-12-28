@@ -6,111 +6,124 @@
 const NIM_API_BASE = '/api/nvidia/v1';
 
 // System prompt for generating mobile app mockups
-const MOCKUP_SYSTEM_PROMPT = `You are an expert UI/UX designer specializing in mobile app design. Your task is to generate HIGHLY DETAILED JSON specifications for mobile app mockup screens based on user descriptions.
+const MOCKUP_SYSTEM_PROMPT = `You are a wireframe designer. Generate JSON specifications for mobile app wireframes using simple primitives.
 
-IMPORTANT: You must respond ONLY with valid JSON. Do not include any markdown, explanations, or text outside the JSON.
+RESPOND ONLY WITH VALID JSON. No markdown, no explanations.
 
-Generate a complete app mockup with the following JSON structure:
+=== JSON STRUCTURE ===
 {
   "appName": "App Name",
   "screens": [
     {
-      "id": "unique-screen-id",
+      "id": "screen-1",
       "name": "Screen Name",
       "position": { "x": 0, "y": 0 },
-      "elements": [
-        {
-          "id": "unique-element-id",
-          "type": "header-text|subheader-text|body-text|input-field|button-primary|button-secondary|card|list-item|image-placeholder|navbar|divider|spacer|icon-row|stats-row|avatar-header|tab-bar|toggle-item|price-tag|rating|badge",
-          "content": {
-            "text": "Display text",
-            "placeholder": "For inputs",
-            "icon": "search|home|user|cart|menu|back|heart|star|settings|bell|camera|share|edit|trash|plus|check|arrow-right",
-            "items": ["For navbar, tabs, or list items"],
-            "title": "For cards",
-            "subtitle": "For cards and list items",
-            "value": "For stats, prices, ratings",
-            "image": "avatar|product|banner|icon"
-          }
-        }
-      ]
+      "elements": [ /* array of elements */ ]
     }
   ],
-  "flows": [
-    {
-      "from": "screen-id",
-      "to": "screen-id",
-      "label": "User action description",
-      "type": "tap|swipe|submit|navigate"
-    }
-  ]
+  "flows": [{ "from": "screen-1", "to": "screen-2", "label": "Tap button", "type": "tap" }]
 }
 
-ELEMENT TYPES (use variety in each screen):
-- header-text: Large bold heading (24-28px)
-- subheader-text: Medium weight subheading (16-18px)
-- body-text: Regular paragraph text (14px)
-- input-field: Text input with icon and placeholder
-- button-primary: Main action button with gradient
-- button-secondary: Secondary outlined button
-- card: Content card with image area, title, subtitle, and optional price/rating
-- list-item: Row item with avatar/icon, title, subtitle, and chevron
-- image-placeholder: Hero image, banner, or product image area
-- navbar: Bottom navigation bar (4-5 items with icons)
-- divider: Horizontal separator line
-- spacer: Vertical spacing (small, medium, large)
-- icon-row: Row of action icons (like, comment, share, save)
-- stats-row: Stats display (followers, posts, likes with numbers)
-- avatar-header: User profile header with avatar, name, bio
-- tab-bar: Horizontal tabs for filtering content
-- toggle-item: Settings toggle with label and switch
-- price-tag: Price display with currency
-- rating: Star rating with count
-- badge: Status badge or tag
+=== WIREFRAME ELEMENTS (only use these) ===
 
-DESIGN REQUIREMENTS:
-1. Each screen MUST have 8-15 elements for a realistic, detailed look
-2. Include proper visual hierarchy: header → subheader → content → actions
-3. Add spacers and dividers between sections for clean layout
-4. Use realistic, contextual placeholder text (not "Lorem ipsum")
-5. Include a navbar on main screens
-6. Add action buttons where users would expect them
+1. TEXT - Any text content
+   { "id": "t1", "type": "text", "content": "Hello World", "style": "heading|subheading|body|muted|label" }
 
-FLOW REQUIREMENTS:
-1. Create flows for EVERY user action that navigates between screens
-2. Use descriptive labels like "Tap product card", "Submit form", "Click profile"
-3. Include flow type: tap, swipe, submit, or navigate
-4. Create a logical user journey from start to completion
+2. BUTTON - Clickable button
+   { "id": "b1", "type": "button", "content": "Click Me", "variant": "primary|secondary|outline" }
 
-SCREEN POSITIONING:
-- Row 1: x=100 (main flow screens)
-- Row 2: x=500 (secondary screens)
-- Row 3: x=900 (detail/modal screens)
-- Vertical spacing: y increments of 750px
-- First screen: {x: 100, y: 100}
+3. INPUT - Text input field
+   { "id": "i1", "type": "input", "placeholder": "Enter text...", "icon": "search|user|mail|lock" }
 
-Create 4-8 screens for a complete user flow with realistic, detailed content.`;
+4. IMAGE - Image placeholder
+   { "id": "img1", "type": "image", "label": "Profile Photo", "size": "small|medium|large|banner" }
 
-const EDIT_SYSTEM_PROMPT = `You are an expert UI/UX designer. The user has selected elements or screens in a mobile app mockup and wants to make changes.
+5. ICON - Icon with optional label
+   { "id": "ic1", "type": "icon", "name": "heart|star|cart|user|settings|bell|home|search|menu|back|send|plus|trash|edit|check", "label": "Favorites" }
 
-You will receive:
-1. The current mockup JSON
-2. Information about what is selected (screens or elements)
-3. The user's change request
+6. BOX - Container for grouping elements (can be nested)
+   { "id": "box1", "type": "box", "variant": "card|row|column|highlight", "children": [ /* nested elements */ ] }
 
-Respond with the COMPLETE updated mockup JSON that incorporates the requested changes. Only output valid JSON, no explanations.
+7. DIVIDER - Horizontal separator
+   { "id": "d1", "type": "divider" }
 
-Keep all unselected elements exactly as they are. Only modify the selected items based on the user's request.`;
+8. SPACER - Vertical space
+   { "id": "s1", "type": "spacer", "size": "small|medium|large" }
+
+9. NAVBAR - Bottom navigation (use once per screen, at the end)
+   { "id": "nav", "type": "navbar", "items": ["Home", "Search", "Cart", "Profile"] }
+
+=== BOX VARIANTS ===
+- "card": Rounded container with background
+- "row": Horizontal layout (items side by side)
+- "column": Vertical layout (items stacked)
+- "highlight": Accent-colored container
+
+=== EXAMPLES ===
+
+Chat message:
+{ "type": "box", "variant": "card", "children": [
+  { "type": "text", "content": "Hello! How can I help?", "style": "body" },
+  { "type": "text", "content": "10:30 AM", "style": "muted" }
+]}
+
+Product card:
+{ "type": "box", "variant": "card", "children": [
+  { "type": "box", "variant": "row", "children": [
+    { "type": "image", "label": "Product", "size": "medium" },
+    { "type": "box", "variant": "column", "children": [
+      { "type": "text", "content": "Pizza Margherita", "style": "subheading" },
+      { "type": "text", "content": "Classic Italian pizza", "style": "muted" },
+      { "type": "text", "content": "$12.99", "style": "heading" }
+    ]},
+    { "type": "button", "content": "Add", "variant": "primary" }
+  ]}
+]}
+
+Profile header:
+{ "type": "box", "variant": "highlight", "children": [
+  { "type": "box", "variant": "row", "children": [
+    { "type": "image", "label": "Avatar", "size": "medium" },
+    { "type": "box", "variant": "column", "children": [
+      { "type": "text", "content": "John Doe", "style": "heading" },
+      { "type": "text", "content": "john@email.com", "style": "muted" }
+    ]},
+    { "type": "button", "content": "Edit", "variant": "outline" }
+  ]}
+]}
+
+=== QUALITY RULES ===
+1. Each screen should have 6-15 elements
+2. Use realistic content (actual names, text, prices)
+3. Nest boxes to create complex layouts
+4. Use "row" for horizontal layouts, "column" for vertical
+5. Include navbar on main screens
+6. End each screen's elements with the navbar
+
+=== SCREEN POSITIONS ===
+First: {x:100, y:100}, then x+400 for columns, y+750 for rows
+
+Generate 4-6 screens with nested elements for any app type.`;
+
+const EDIT_SYSTEM_PROMPT = `You are a wireframe designer. Modify the wireframe based on user request.
+
+ELEMENT TYPES: text, button, input, image, icon, box, divider, spacer, navbar
+BOX VARIANTS: card, row, column, highlight
+Use nested "box" elements with "children" arrays for complex layouts.
+
+Return the COMPLETE updated mockup JSON. Only valid JSON, no explanations.`;
+
 
 class NIMApiService {
   constructor() {
-    this.apiKey = localStorage.getItem('nim_api_key') || '';
+    // Get API key from environment variable (set in .env file)
+    this.apiKey = import.meta.env.VITE_NIM_API_KEY || '';
     this.model = localStorage.getItem('nim_model') || 'meta/llama-3.1-70b-instruct';
   }
 
   setApiKey(key) {
+    // API key is now managed via .env file, this is kept for compatibility
     this.apiKey = key;
-    localStorage.setItem('nim_api_key', key);
   }
 
   getApiKey() {

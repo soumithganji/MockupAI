@@ -38,6 +38,25 @@ export function renderElement(element, screenId) {
   // Skip navbar - it's rendered separately
   if (element.type === 'navbar') return '';
 
+  // NEW: Handle dynamic HTML/CSS elements (flexible approach)
+  if (element.html) {
+    // Inject scoped CSS if provided
+    const cssId = `css-${screenId}-${element.id}`;
+    if (element.css && !document.getElementById(cssId)) {
+      const styleEl = document.createElement('style');
+      styleEl.id = cssId;
+      styleEl.textContent = element.css;
+      document.head.appendChild(styleEl);
+    }
+
+    return `
+      <div class="ui-element dynamic-element ${selectedClass}" data-element-id="${element.id}">
+        ${element.html}
+      </div>
+    `;
+  }
+
+  // LEGACY: Handle predefined element types (backwards compatibility)
   switch (element.type) {
     case 'header-text':
       return `
@@ -244,6 +263,42 @@ export function renderElement(element, screenId) {
         <div class="ui-element message-bubble ${isOwn ? 'own' : ''} ${selectedClass}" data-element-id="${element.id}">
           <div class="bubble-content">${element.content?.text || 'Message text'}</div>
           <div class="bubble-time">${element.content?.subtitle || '2:34 PM'}</div>
+        </div>
+      `;
+
+    case 'cart-item':
+      return `
+        <div class="ui-element cart-item ${selectedClass}" data-element-id="${element.id}">
+          <div class="cart-item-image"></div>
+          <div class="cart-item-details">
+            <div class="cart-item-name">${element.content?.title || 'Item Name'}</div>
+            <div class="cart-item-variant">${element.content?.subtitle || 'Size: M'}</div>
+            <div class="cart-item-price">${element.content?.value || '$19.99'}</div>
+          </div>
+          <div class="cart-item-quantity">
+            <button class="qty-btn">−</button>
+            <span class="qty-value">${element.content?.quantity || '1'}</span>
+            <button class="qty-btn">+</button>
+          </div>
+          <button class="cart-item-remove">${icons.trash}</button>
+        </div>
+      `;
+
+    case 'menu-item':
+      const menuIcon = element.content?.icon ? (icons[element.content.icon] || icons.settings) : icons.settings;
+      return `
+        <div class="ui-element menu-item ${selectedClass}" data-element-id="${element.id}">
+          <span class="menu-icon">${menuIcon}</span>
+          <span class="menu-label">${element.content?.title || 'Menu Item'}</span>
+          <span class="menu-arrow">${icons.chevron}</span>
+        </div>
+      `;
+
+    case 'price-row':
+      return `
+        <div class="ui-element price-row ${selectedClass}" data-element-id="${element.id}">
+          <span class="price-label">${element.content?.title || 'Subtotal'}</span>
+          <span class="price-value">${element.content?.value || '$0.00'}</span>
         </div>
       `;
 
