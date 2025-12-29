@@ -24,6 +24,10 @@ const icons = {
   check: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
   mail: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
   lock: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  // Aliases for common icon names
+  pencil: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  write: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  compose: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
 };
 
 /**
@@ -170,11 +174,27 @@ export function renderWireframeElement(element, screenId, depth = 0) {
       `;
 
     case 'header':
+      // Handle rightAction - can be string icon name or object with icon/content
+      let rightActionHtml = '';
+      if (element.rightAction) {
+        if (typeof element.rightAction === 'string') {
+          // Simple icon name like 'settings' or 'pencil'
+          rightActionHtml = `<div class="wf-header-action">${icons[element.rightAction] || icons.settings}</div>`;
+        } else if (typeof element.rightAction === 'object') {
+          // Object with icon or content
+          const actionIcon = element.rightAction.icon || element.rightAction.name;
+          if (actionIcon && icons[actionIcon]) {
+            rightActionHtml = `<div class="wf-header-action">${icons[actionIcon]}</div>`;
+          } else if (element.rightAction.content) {
+            rightActionHtml = `<div class="wf-header-action">${element.rightAction.content}</div>`;
+          }
+        }
+      }
       return `
         <div class="wf-element wf-header ${selectedClass}" data-element-id="${id}">
           ${element.showBack ? `<div class="wf-header-back">${icons.back}</div>` : ''}
           <div class="wf-header-title">${element.title || 'Screen Title'}</div>
-          ${element.rightAction ? `<div class="wf-header-action">${icons[element.rightAction] || element.rightAction}</div>` : ''}
+          ${rightActionHtml}
         </div>
       `;
 

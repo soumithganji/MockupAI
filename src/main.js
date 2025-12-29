@@ -9,6 +9,7 @@ import { store } from './services/store.js';
 import { nimApi } from './services/nimApi.js';
 import { initCanvas } from './components/Canvas.js';
 import { exportToPDF } from './utils/pdfExport.js';
+import html2canvas from 'html2canvas';
 
 class App {
   constructor() {
@@ -386,29 +387,106 @@ Select elements or describe changes to refine the design.`);
         const wantsEdit = editKeywords.some(keyword => message.toLowerCase().includes(keyword));
 
         if (mockup && (selectedItems.length > 0 || wantsEdit)) {
-          // Edit existing mockup
-          console.log('Editing mockup with request:', message);
-          response = await nimApi.editMockup(mockup, selectedItems, message);
-          console.log('Raw AI response:', response);
-          const updatedMockup = nimApi.parseJsonResponse(response);
-          console.log('Parsed mockup:', updatedMockup);
+          // Check if a single screen is selected - use vision-based editing
+          const selectedScreens = selectedItems.filter(i => i.type === 'screen');
 
-          // Preserve original screen positions if not specified in update
-          if (mockup.screens && updatedMockup.screens) {
-            updatedMockup.screens.forEach((screen, idx) => {
-              const originalScreen = mockup.screens.find(s => s.id === screen.id) || mockup.screens[idx];
-              if (originalScreen && !screen.position) {
-                screen.position = originalScreen.position;
+          if (selectedScreens.length === 1) {
+            // Vision-based editing for single screen
+            const screenId = selectedScreens[0].id;
+            const screenData = mockup.screens.find(s => s.id === screenId);
+
+            if (screenData) {
+              console.log('Using vision-based editing for screen:', screenId);
+              store.addChatMessage('assistant', '👀 Analyzing screen...');
+              this.renderChatMessages();
+
+              try {
+                // Use text-based editing for single screen (vision capture has issues)
+                // The AI still gets the full JSON structure which provides good context
+                console.log('Editing single screen with text-based API:', screenId);
+                response = await nimApi.editSingleScreen(screenData, message);
+              } catch (editErr) {
+                console.error('Single screen edit failed:', editErr);
+                // Try global edit as fallback
+                response = await nimApi.editMockup(mockup, selectedItems, message);
               }
-            });
+
+              console.log('Raw AI response:', response);
+              const updatedScreen = nimApi.parseJsonResponse(response);
+              console.log('Parsed screen update:', updatedScreen);
+
+              // Safety check: don't apply if AI returned empty elements but original had content
+              const originalElements = screenData.elements?.length || 0;
+              const newElements = updatedScreen.elements?.length || 0;
+
+              if (originalElements > 0 && newElements === 0) {
+                console.error('AI returned empty screen, ignoring update');
+                store.addChatMessage('assistant', `⚠️ Could not process that request properly. Try being more specific, like "change the title text to X" or "add a button below the header".`);
+              } else {
+                // Update only the selected screen in the mockup - DEEP CLONE to trigger re-render
+                const updatedMockup = {
+                  ...mockup,
+                  screens: mockup.screens.map(s => {
+                    if (s.id === screenId) {
+                      return {
+                        ...updatedScreen,
+                        id: screenId,
+                        position: s.position,  // Keep original position
+                        name: updatedScreen.name || s.name  // Keep name if not provided
+                      };
+                    }
+                    return { ...s };  // Clone other screens too
+                  })
+                };
+
+                console.log('Applying updated mockup:', updatedMockup);
+                console.log('Screen being updated:', screenId, 'with elements:', updatedScreen.elements?.length);
+                this.ensureMockupIds(updatedMockup);
+                store.setMockup(updatedMockup);
+                console.log('Store mockup after update:', store.getMockup());
+
+                // Force immediate re-render of canvas
+                if (this.canvas) {
+                  console.log('Calling canvas.render()');
+                  this.canvas.render();
+                  // Also try after a short delay
+                  setTimeout(() => {
+                    console.log('Delayed canvas.render()');
+                    this.canvas.render();
+                  }, 200);
+                } else {
+                  console.error('Canvas not available for re-render');
+                }
+
+                const elementCount = updatedScreen.elements?.length || 0;
+                store.addChatMessage('assistant', `✅ Updated "${updatedScreen.name || 'screen'}" with ${elementCount} elements.`);
+              }
+            }
+          } else {
+            // Regular text-based editing for multiple selections or elements
+            console.log('Editing mockup with request:', message);
+            response = await nimApi.editMockup(mockup, selectedItems, message);
+            console.log('Raw AI response:', response);
+            const updatedMockup = nimApi.parseJsonResponse(response);
+            console.log('Parsed mockup:', updatedMockup);
+
+            // Preserve original screen positions if not specified in update
+            if (mockup.screens && updatedMockup.screens) {
+              updatedMockup.screens.forEach((screen, idx) => {
+                const originalScreen = mockup.screens.find(s => s.id === screen.id) || mockup.screens[idx];
+                if (originalScreen && !screen.position) {
+                  screen.position = originalScreen.position;
+                }
+              });
+            }
+
+            this.ensureMockupIds(updatedMockup);
+            store.setMockup(updatedMockup);
+
+            const screenCount = updatedMockup.screens?.length || 0;
+            const elementCount = updatedMockup.screens?.reduce((sum, s) => sum + (s.elements?.length || 0), 0) || 0;
+            store.addChatMessage('assistant', `Done! Updated mockup with ${screenCount} screens and ${elementCount} elements.`);
           }
-
-          this.ensureMockupIds(updatedMockup);
-          store.setMockup(updatedMockup);
-
-          const screenCount = updatedMockup.screens?.length || 0;
-          const elementCount = updatedMockup.screens?.reduce((sum, s) => sum + (s.elements?.length || 0), 0) || 0;
-          store.addChatMessage('assistant', `Done! Updated mockup with ${screenCount} screens and ${elementCount} elements.`);
         } else if (!mockup) {
           // Generate new mockup
           response = await nimApi.generateMockup(message);
