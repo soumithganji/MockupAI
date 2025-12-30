@@ -1,16 +1,12 @@
 # AI Prototyper
 
 <p align="center">
-  <img src="public/vite.svg" alt="AI Prototyper Logo" width="80" height="80"/>
-</p>
-
-<p align="center">
   <strong>Transform your app ideas into professional mobile mockups in seconds using AI</strong>
 </p>
 
 <p align="center">
   <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
+  <a href="#preview">Preview</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#api-reference">API Reference</a>
@@ -38,19 +34,19 @@ Simply describe your app idea—like "a fitness tracking app with workout plans 
 ## Preview
 
 <p align="center">
-  <img src="screenshots/main-interface.png" alt="Main Interface" width="800"/>
+  <img src="screenshots/img1.png" alt="Main Interface" width="800"/>
   <br/>
   <em>Main Interface - Describe your app idea and select generation options</em>
 </p>
 
 <p align="center">
-  <img src="screenshots/generated-mockup.png" alt="Generated Mockup" width="800"/>
+  <img src="screenshots/img2.png" alt="Generated Mockup" width="800"/>
   <br/>
   <em>Generated Mockup - AI-generated screens with navigation flows</em>
 </p>
 
 <p align="center">
-  <img src="screenshots/ai-editing.png" alt="AI Editing" width="800"/>
+  <img src="screenshots/img3.png" alt="AI Editing" width="800"/>
   <br/>
   <em>AI Editing - Select elements and describe changes in natural language</em>
 </p>
@@ -507,18 +503,6 @@ In production, you'll need to:
 1. Use a backend proxy to forward NIM API requests, OR
 2. Deploy your own API gateway, OR
 3. Use NVIDIA's CORS-enabled endpoints (if available)
-
----
-
-## Roadmap
-
-- [ ] **Real-time Collaboration**: Multiple users editing same mockup
-- [ ] **Version History**: Undo/redo with full history
-- [ ] **Custom Components**: User-defined reusable components
-- [ ] **Theme Editor**: Visual design token customization
-- [ ] **Sketch/Adobe XD Export**: Additional design tool integrations
-- [ ] **Mobile Preview**: Interactive prototype testing
-- [ ] **Asset Library**: Pre-built templates and UI kits
 
 ---
 
