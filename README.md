@@ -1,20 +1,9 @@
-# AI Prototyper
+# MockupAI
 
 <p align="center">
   <strong> Transform your app ideas into professional mobile mockups in seconds using AI</strong>
 </p>
 
-<p align="center">
-  <a href="#preview">
-    <img src="https://img.shields.io/badge/Live-Preview-8B5CF6?style=for-the-badge" alt="Preview"/>
-  </a>
-  <a href="https://build.nvidia.com">
-    <img src="https://img.shields.io/badge/Powered_by-NVIDIA_NIM-76B900?style=for-the-badge&logo=nvidia" alt="NVIDIA NIM"/>
-  </a>
-  <a href="#quick-start">
-    <img src="https://img.shields.io/badge/Get-Started-06B6D4?style=for-the-badge" alt="Get Started"/>
-  </a>
-</p>
 
 <p align="center">
   <a href="#features">Features</a> •
@@ -28,9 +17,9 @@
 
 ## Overview
 
-**AI Prototyper** is a powerful web-based tool that generates professional mobile app mockups from natural language descriptions. Powered by **NVIDIA NIM** (Llama 3.1 models), it enables designers, developers, and product managers to rapidly prototype app concepts without any design skills.
+**MockupAI** is a powerful web-based tool that generates professional mobile app mockups from natural language descriptions. Powered by **NVIDIA NIM** (Llama 3.1 models), it enables designers, developers, and product managers to rapidly prototype app concepts without any design skills.
 
-> Simply describe your app idea—like *"a fitness tracking app with workout plans and progress charts"*—and watch as AI Prototyper generates complete, interactive wireframes with multiple screens, navigation flows, and realistic UI components.
+> Simply describe your app idea—like *"a fitness tracking app with workout plans and progress charts"*—and watch as MockupAI generates complete, interactive wireframes with multiple screens, navigation flows, and realistic UI components.
 
 ### Key Capabilities
 
@@ -71,7 +60,7 @@
 
 ###  Intelligent Generation Pipeline
 
-AI Prototyper uses a **two-step progressive generation** approach for optimal results:
+MockupAI uses a **two-step progressive generation** approach for optimal results:
 
 1. **Product Analysis** (Fast Model: Llama 3.1 8B)
    - Extracts structured product requirements from vague prompts
@@ -363,7 +352,7 @@ interface ListItemElement {
 
 ### NVIDIA NIM Integration
 
-AI Prototyper uses NVIDIA NIM's OpenAI-compatible API:
+MockupAI uses NVIDIA NIM's OpenAI-compatible API:
 
 **Endpoint:** `https://integrate.api.nvidia.com/v1/chat/completions`
 
@@ -430,9 +419,9 @@ The included Figma plugin allows direct import of generated mockups:
 
 ### Usage
 
-1. Generate a mockup in AI Prototyper
+1. Generate a mockup in MockupAI
 2. Click **"Figma"** button to copy JSON
-3. Open Figma and run the AI Prototyper plugin
+3. Open Figma and run the MockupAI plugin
 4. Paste JSON and click **"Create Mockup"**
 
 ### Plugin Capabilities

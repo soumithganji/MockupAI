@@ -1,6 +1,6 @@
-# AI Prototyper - Figma Plugin
+# MockupAI - Figma Plugin
 
-Import mockups created by AI Prototyper directly into Figma with proper frames, auto-layout, and components.
+Import mockups created by MockupAI directly into Figma with proper frames, auto-layout, and components.
 
 ## Installation
 
@@ -10,10 +10,10 @@ Import mockups created by AI Prototyper directly into Figma with proper frames, 
 
 ## Usage
 
-1. Generate a mockup in AI Prototyper (web app)
+1. Generate a mockup in MockupAI (web app)
 2. Click the **"Figma"** button in the toolbar
 3. JSON is copied to your clipboard
-4. In Figma, run the AI Prototyper plugin
+4. In Figma, run the MockupAI plugin
 5. Paste JSON and click **"Create Mockup"**
 
 ## What Gets Created

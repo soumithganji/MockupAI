@@ -1,5 +1,5 @@
 /**
- * AI Prototyper - Figma Plugin
+ * MockupAI - Figma Plugin
  * Receives UI Spec JSON and builds Figma frames with components
  */
 

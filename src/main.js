@@ -1,5 +1,5 @@
 /**
- * AI Prototyper - Main Application
+ * MockupAI - Main Application
  * Mobile App Mockup Generator using NVIDIA NIM
  */
 
@@ -619,7 +619,7 @@ Select elements or describe changes to refine the design.`);
       container.innerHTML = `
         <div class="chat-welcome">
           <div class="welcome-icon">✨</div>
-          <h4>Welcome to AI Prototyper</h4>
+          <h4>Welcome to MockupAI</h4>
           <p>Describe your mobile app idea or select elements on the canvas to modify them.</p>
         </div>
       `;
